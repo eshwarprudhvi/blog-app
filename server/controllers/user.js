@@ -22,14 +22,13 @@ const createUser = async (req, res) => {
     });
     try {
       await newUser.save();
-      req.user = newUser;
     } catch (e) {
       res.status(500).json({
         message: "unable to create user",
       });
       return;
     }
-    const token = generateToken(newUser._id);
+    const token = generateToken(res, newUser._id);
     res.status(201).json({
       message: token,
     });
@@ -60,7 +59,7 @@ const loginUser = async (req, res) => {
         message: "Invalid credentials",
       });
     }
-    const token = generateToken(user._id);
+    const token = generateToken(res, user._id);
     return res.json({
       message: token,
     });
@@ -71,4 +70,15 @@ const loginUser = async (req, res) => {
   }
 };
 
-export { createUser, loginUser };
+const logoutUser = async (req, res) => {
+  console.log(req.user);
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    maxAge: 0,
+  });
+  res.json({
+    message: "Logged Out successfully",
+  });
+};
+
+export { createUser, loginUser, logoutUser };
