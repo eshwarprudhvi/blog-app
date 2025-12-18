@@ -1,3 +1,5 @@
+import Blog from "../models/blog.js";
+import user from "../models/user.js";
 import User from "../models/user.js";
 import generateToken from "../utils/generateToken.js";
 import bcrypt from "bcryptjs";
@@ -81,4 +83,92 @@ const logoutUser = async (req, res) => {
   });
 };
 
-export { createUser, loginUser, logoutUser };
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({}).select("-password");
+    return res.json(users);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Unable to fetch users",
+    });
+  }
+};
+
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found ",
+      });
+    }
+    return res.json(user);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Unable to fetch user",
+    });
+  }
+};
+const updateUserById = async (req, res) => {
+  try {
+    if (req.user.id != req.params.id) {
+      return res.status(403).json({
+        message: "Not authorized to update this user",
+      });
+    }
+    const user = await User.findById(req.params.id).select("-password");
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found ",
+      });
+    }
+    const { username, email } = req.body;
+    user.username = username || user.username;
+    user.email = email || user.email;
+    const updatedUser = await user.save();
+    return res.json(updatedUser);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Unable to fetch user",
+    });
+  }
+};
+
+const deleteUserById = async (req, res) => {
+  try {
+    //check if authorzied
+    if (req.user.id != req.params.id) {
+      return res.status(403).json({
+        message: "Not authorized to delete the user",
+      });
+    }
+    //check if user is present or not
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+    //delete all the blogs by this user
+    await Blog.deleteMany({ author: req.params.id });
+
+    await user.deleteOne();
+
+    res.status(500).json({
+      message: "User and related blogs deleted Successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Unable to delete   user",
+    });
+  }
+};
+export {
+  createUser,
+  loginUser,
+  logoutUser,
+  getUsers,
+  getUserById,
+  updateUserById,
+  deleteUserById,
+};
