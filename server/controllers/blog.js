@@ -30,10 +30,22 @@ const getAllBlogs = async (req, res) => {
     //no of docs to be skippped
     const skip = (page - 1) * limit;
 
-    //total blogs count
-    const totalBlogsCount = await Blog.countDocuments();
+    //serach
+    const search = req.query.search || "";
+    //search filter
+    const searchFilter = search
+      ? {
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { description: { $regex: search, $options: "i" } },
+          ],
+        }
+      : {};
 
-    const allBlogs = await Blog.find({})
+    //total blogs count
+    const totalBlogsCount = await Blog.countDocuments(searchFilter);
+
+    const allBlogs = await Blog.find(searchFilter)
       .populate("author", "username email")
       .sort({ createdAt: -1 })
       .skip(skip)
