@@ -17,9 +17,8 @@ const createBlog = async (req, res) => {
     await blog.save();
     return res.status(201).json(blog);
   } catch (error) {
-    return res.status(500).json({
-      message: "Unable to create blog",
-    });
+    res.status(500);
+    throw new Error("Unable to create blog");
   }
 };
 
@@ -65,9 +64,8 @@ const getAllBlogs = async (req, res) => {
       totalBlogs: totalBlogsCount,
     });
   } catch (error) {
-    return res.status(500).json({
-      message: "Unable to fetch  blogs",
-    });
+    return res.status(500);
+    throw new Error("Unable to fetch  blogs");
   }
 };
 
@@ -76,9 +74,9 @@ const getBlogById = async (req, res) => {
     const id = req.params.id;
     const blog = await Blog.findById(id).populate("author", "username email");
     if (!blog) {
-      return res.status(404).json({
-        message: "blog not found",
-      });
+      res.status(404);
+      throw new Error("Blog Not Found");
+      return;
     }
     return res.json(blog);
   } catch (error) {
@@ -120,9 +118,8 @@ const deleteBlogById = async (req, res) => {
     const blog = await Blog.findById(req.params.id);
 
     if (!blog) {
-      return res.status(404).json({
-        message: "Blog not found",
-      });
+      return res.status(404);
+      throw new Error("Blog Not Found");
     }
     if (blog.author.toString() !== req.user.id) {
       return res.status(403).json({
