@@ -1,4 +1,5 @@
 import Blog from "../models/blog.js";
+
 const createBlog = async (req, res) => {
   try {
     const { title, description, tags } = req.body;
@@ -33,14 +34,20 @@ const getAllBlogs = async (req, res) => {
     //serach
     const search = req.query.search || "";
     //search filter
-    const searchFilter = search
-      ? {
-          $or: [
-            { title: { $regex: search, $options: "i" } },
-            { description: { $regex: search, $options: "i" } },
-          ],
-        }
-      : {};
+    const searchFilter = {};
+
+    if (search) {
+      searchFilter.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+    //filter tags
+    const tag = req.query.tag;
+
+    if (tag) {
+      searchFilter.tags = tag;
+    }
 
     //total blogs count
     const totalBlogsCount = await Blog.countDocuments(searchFilter);
@@ -50,9 +57,9 @@ const getAllBlogs = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
-    return res.status(201).json({
+    return res.status(200).json({
       page: page,
-      allBlogs,
+      blogs: allBlogs,
 
       pages: Math.ceil(totalBlogsCount / limit),
       totalBlogs: totalBlogsCount,
