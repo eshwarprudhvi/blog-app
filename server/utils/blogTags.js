@@ -1,0 +1,23 @@
+const tags = [
+  "LifeLessons",
+  "Productivity",
+  "Mindfulness",
+  "TravelDiaries",
+  "BookReviews",
+  "HealthyLiving",
+  "PersonalGrowth",
+  "TechTrends",
+  "FinanceBasics",
+  "CreativeWriting",
+  "Motivation",
+  "DailyThoughts",
+  "CareerTips",
+  "Minimalism",
+  "SelfCare",
+  "FoodieLife",
+  "ParentingJourney",
+  "FitnessGoals",
+  "MentalHealth",
+  "WeekendVibes",
+];
+export default tags;

@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+dotenv.config();
 const protect = (req, res, next) => {
   const token = req.cookies.jwt;
   if (!token) {
