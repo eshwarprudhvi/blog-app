@@ -23,11 +23,28 @@ const createBlog = async (req, res) => {
 };
 
 const getAllBlogs = async (req, res) => {
+  //pagination
   try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    //no of docs to be skippped
+    const skip = (page - 1) * limit;
+
+    //total blogs count
+    const totalBlogsCount = await Blog.countDocuments();
+
     const allBlogs = await Blog.find({})
       .populate("author", "username email")
-      .sort({ createdAt: -1 });
-    return res.status(201).json(allBlogs);
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+    return res.status(201).json({
+      page: page,
+      allBlogs,
+
+      pages: Math.ceil(totalBlogsCount / limit),
+      totalBlogs: totalBlogsCount,
+    });
   } catch (error) {
     return res.status(500).json({
       message: "Unable to fetch  blogs",
