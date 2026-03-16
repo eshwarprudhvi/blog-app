@@ -17,7 +17,7 @@ const EditBlog = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/blogs/${id}`);
+        const res = await axios.get(`https://blog-app-0j5v.onrender.com/api/blogs/${id}`);
         setTitle(res.data.title);
         setDescription(res.data.description);
         setTags(res.data.tags);
@@ -45,7 +45,7 @@ const EditBlog = () => {
       const finalTags = tags;
 
       const res = await axios.put(
-        `http://localhost:3000/api/blogs/${id}`,
+        `https://blog-app-0j5v.onrender.com/api/blogs/${id}`,
         formData,
         {
           withCredentials: true,

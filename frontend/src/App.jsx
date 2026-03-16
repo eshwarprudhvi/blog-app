@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/users/me", {
+        const res = await axios.get("https://blog-app-0j5v.onrender.com/api/users/me", {
           withCredentials: true,
         });
         dispatch(loginSuccess(res.data.user));

@@ -15,7 +15,7 @@ const BlogList = () => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       fetch(
-        `http://localhost:3000/api/blogs?search=${search}&page=${page}&tag=${tag}`
+        `https://blog-app-0j5v.onrender.com/api/blogs?search=${search}&page=${page}&tag=${tag}`
       )
         .then((res) => res.json())
         .then((data) => {

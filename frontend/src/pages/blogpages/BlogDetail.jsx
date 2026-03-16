@@ -17,7 +17,7 @@ const BlogDetail = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/blogs/${id}`);
+        const res = await axios.get(`https://blog-app-0j5v.onrender.com/api/blogs/${id}`);
         setBlog(res.data);
       } catch (error) {
         toast.error(error.message);
@@ -34,7 +34,7 @@ const BlogDetail = () => {
   const handleDelete = async () => {
     if(!window.confirm("Are you sure you want to delete this blog post?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/blogs/${id}`, {
+      await axios.delete(`https://blog-app-0j5v.onrender.com/api/blogs/${id}`, {
         withCredentials: true,
       });
       toast.success("Blog deleted successfully");

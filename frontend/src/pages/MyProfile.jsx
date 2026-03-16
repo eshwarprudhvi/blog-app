@@ -30,7 +30,7 @@ const MyProfile = () => {
         formData.append("profile", profileFile);
       }
       const res = await axios.put(
-        "http://localhost:3000/api/users/profile",
+        "https://blog-app-0j5v.onrender.com/api/users/profile",
         formData,
         {
           withCredentials: true,
@@ -54,7 +54,7 @@ const MyProfile = () => {
     const fetchBlogs = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3000/api/blogs/author/${id}`,
+          `https://blog-app-0j5v.onrender.com/api/blogs/author/${id}`,
           { withCredentials: true }
         );
         setBlogs(res.data.blogs || []);

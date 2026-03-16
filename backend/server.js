@@ -14,7 +14,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+   origin: [
+      "http://localhost:5173",
+      "https://blog-app-prudhvi.netlify.app/"
+     
+    ],
     credentials: true,
   })
 );
@@ -42,5 +46,5 @@ app.use("/api/blogs", blogRoutes);
 app.use(errorHandler);
 
 app.listen(port, () => {
-  console.log("app is listening on the port 3000");
+  console.log(`app is listening on the port ${port}`);
 });

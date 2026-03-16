@@ -16,8 +16,8 @@ const AuthorsDetail = () => {
     const fetchData = async () => {
       try {
         const [authorRes, blogsRes] = await Promise.all([
-          axios.get(`http://localhost:3000/api/users/${id}`, { withCredentials: true }),
-          axios.get(`http://localhost:3000/api/blogs/author/${id}`, { withCredentials: true })
+          axios.get(`https://blog-app-0j5v.onrender.com/api/users/${id}`, { withCredentials: true }),
+          axios.get(`https://blog-app-0j5v.onrender.com/api/blogs/author/${id}`, { withCredentials: true })
         ]);
         setAuthor(authorRes.data);
         setBlogs(blogsRes.data.blogs || []);

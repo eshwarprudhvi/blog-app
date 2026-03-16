@@ -9,7 +9,7 @@ const Authors = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/users", {
+        const res = await axios.get("https://blog-app-0j5v.onrender.com/api/users", {
           withCredentials: true,
         });
         setUsers(res.data);

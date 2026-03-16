@@ -25,7 +25,7 @@ const CreateBlog = () => {
         formData.append("image", image);
       }
       const res = await axios.post(
-        "http://localhost:3000/api/blogs",
+        "https://blog-app-0j5v.onrender.com/api/blogs",
         formData,
         {
           withCredentials: true,
