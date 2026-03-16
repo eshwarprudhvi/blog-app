@@ -4,6 +4,7 @@ import AuthorsCard from "../components/AuthorsCard";
 
 const Authors = () => {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -14,18 +15,40 @@ const Authors = () => {
         setUsers(res.data);
       } catch (err) {
         console.error("Error fetching users:", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchUsers();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Authors</h1>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-        {users.map((user) => (
-          <AuthorsCard key={user._id} user={user} />
-        ))}
+    <div className="min-h-screen bg-gray-50 pb-12">
+      <div className="bg-white border-b border-gray-200 mb-8 py-10 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+            Meet Our Authors
+          </h1>
+          <p className="text-gray-500 max-w-2xl mx-auto">
+            Discover the brilliant minds writing behind the scenes
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {users.map((user) => (
+            <AuthorsCard key={user._id} user={user} />
+          ))}
+        </div>
       </div>
     </div>
   );

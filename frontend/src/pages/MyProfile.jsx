@@ -7,6 +7,7 @@ import { updateProfileSuccess } from "../store/authSlice";
 import axios from "axios";
 import { toast } from "react-toastify";
 import NoBlogs from "../components/NoBlogs";
+
 const MyProfile = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -17,6 +18,7 @@ const MyProfile = () => {
 
   const [profileFile, setProfileFile] = useState("");
   const [preview, setPreview] = useState(user.profileImage);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -38,116 +40,149 @@ const MyProfile = () => {
       dispatch(updateProfileSuccess(res.data));
       toast.success("Profile updated successfully!");
     } catch (error) {
-      toast.error("failed to update the profile");
+      toast.error("Failed to update the profile");
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (user) {
       setUsername(user.username);
       setPreview(user.profileImage);
     }
     const fetchBlogs = async () => {
-      const res = await axios.get(
-        `http://localhost:3000/api/blogs/author/${id}`,
-        { withCredentials: true }
-      );
-      console.log(res.data.blogs);
-      setBlogs(res.data.blogs);
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/api/blogs/author/${id}`,
+          { withCredentials: true }
+        );
+        setBlogs(res.data.blogs || []);
+      } catch (err) {
+        console.error(err);
+      }
     };
     fetchBlogs();
-  }, [user]);
+  }, [user, id]);
 
   return (
-    <>
-      <section className="mt-7 flex flex-col items-center">
-        <div>
-          <form action="" className="relative" onSubmit={handleUpdate}>
-            <img
-              src={preview || profileImage}
-              alt="profile-image"
-              className="h-[12rem] w-[12rem] mt-2 rounded-full border-10 border-blue-300 object-cover"
-            />
-
-            <input
-              type="file"
-              name="profile"
-              id="profile"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                setProfileFile(file);
-                setPreview(URL.createObjectURL(file));
-              }}
-              accept="image/*"
-              className="hidden"
-            />
-            <label
-              htmlFor="profile"
-              className="cursor-pointer absolute bottom-22 right-0 left-35 text-white bg-black text-[1.2rem] border-2 p-2  w-fit rounded-full"
-            >
-              <FaEdit />
-            </label>
-
-            <div className="flex flex-row mt-3">
-              <label htmlFor="username">Username : </label>
-              <input
-                id="username"
-                name="profile"
-                placeholder="enter username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-
-            <button
-              disabled={loading}
-              type="submit"
-              className="p-2 bg-blue-400 hover:bg-blue-500 cursor-pointer text-white cursor-pointer rounded-sm px-4 ml-14"
-            >
-              {loading ? "loading..." : " Edit"}
-            </button>
-          </form>
-        </div>
-      </section>
-      <h2 className="mt-10 px-5 text-3xl">My Blogs</h2>
-      {/* blogs of the author */}
-      <section className="mt-4 flex flex-col gap-3 ">
-        {blogs.length == 0 ? (
-          <NoBlogs />
-        ) : (
-          blogs.map((blog, index) => {
-            return (
-              <div
-                key={index}
-                className="flex items-center gap-4  p-3 rounded-md shadow-xl"
-              >
-                {/* Blog Image */}
+    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto space-y-8">
+        
+        {/* Profile Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden py-10">
+          <div className="px-6 sm:px-10 flex flex-col items-center">
+            <form onSubmit={handleUpdate} className="flex flex-col items-center w-full max-w-sm">
+              <div className="relative mb-8">
                 <img
-                  src={
-                    blog.image ||
-                    "https://blogs.oregonstate.edu/patss/wp-content/themes/koji/assets/images/default-fallback-image.png"
-                  }
-                  alt={blog.title}
-                  className="w-20 h-20 object-cover rounded-md"
+                  src={preview || profileImage}
+                  alt="profile"
+                  className="h-32 w-32 sm:h-40 sm:w-40 rounded-full border-4 border-gray-50 object-cover shadow-sm bg-gray-50"
                 />
-
-                {/* Blog Title */}
-                <h3 className="flex-1 text-lg font-semibold">{blog.title}</h3>
-
-                {/* View Button */}
-                <Link
-                  to={`/${blog._id}`}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+                <input
+                  type="file"
+                  name="profile"
+                  id="profile"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if(file) {
+                      setProfileFile(file);
+                      setPreview(URL.createObjectURL(file));
+                    }
+                  }}
+                  accept="image/*"
+                  className="hidden"
+                />
+                <label
+                  htmlFor="profile"
+                  className="cursor-pointer absolute bottom-2 right-2 bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 rounded-full shadow-md transition-colors border-2 border-white flex items-center justify-center transform hover:scale-105"
+                  title="Change Profile Picture"
                 >
-                  View
-                </Link>
+                  <FaEdit className="w-5 h-5" />
+                </label>
               </div>
-            );
-          })
-        )}
-      </section>
-    </>
+
+              <div className="w-full">
+                <div className="mb-5 text-center">
+                  <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+                    Display Name
+                  </label>
+                  <input
+                    id="username"
+                    name="profile"
+                    type="text"
+                    required
+                    placeholder="Enter your username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="appearance-none block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-base transition duration-150 text-center"
+                  />
+                </div>
+
+                <button
+                  disabled={loading}
+                  type="submit"
+                  className="w-full flex justify-center py-2.5 px-6 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {loading ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Authored Blogs List */}
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 pl-1">My Authored Blogs</h2>
+          
+          {blogs.length === 0 ? (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 flex justify-center mb-6">
+              <NoBlogs />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {blogs.map((blog, index) => (
+                <div
+                  key={index}
+                  className="bg-white flex flex-col sm:flex-row items-start sm:items-center p-4 sm:p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 gap-4"
+                >
+                  <img
+                    src={blog.image || "https://blogs.oregonstate.edu/patss/wp-content/themes/koji/assets/images/default-fallback-image.png"}
+                    alt={blog.title}
+                    className="w-full sm:w-28 sm:h-20 h-40 object-cover rounded-lg flex-shrink-0 border border-gray-100"
+                  />
+                  
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-bold text-gray-900 truncate mb-1">
+                      {blog.title}
+                    </h3>
+                    <p className="text-sm text-gray-500 line-clamp-2">
+                      {blog.description}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 sm:mt-0 sm:self-center w-full sm:w-auto shrink-0 flex gap-2">
+                    <Link
+                      to={`/edit-blog/${blog._id}`}
+                      className="flex-1 sm:flex-none text-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      Edit
+                    </Link>
+                    <Link
+                      to={`/${blog._id}`}
+                      className="flex-1 sm:flex-none text-center bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      View
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+      </div>
+    </div>
   );
 };
 
