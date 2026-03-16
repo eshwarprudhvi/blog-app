@@ -16,7 +16,7 @@ app.use(
   cors({
    origin: [
       "http://localhost:5173",
-      "https://blog-app-prudhvi.netlify.app/"
+      "https://blog-app-prudhvi.netlify.app"
      
     ],
     credentials: true,
