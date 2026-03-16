@@ -3,50 +3,64 @@ import EastIcon from "@mui/icons-material/East";
 import { Link, useNavigate } from "react-router-dom";
 
 import profile from "../assets/profile.png";
+
 const Card = ({ title, description, tag, author, blogId, image }) => {
   const { _id } = author;
   const navigate = useNavigate();
+  
   const handleClick = () => {
     navigate(`/authors/${_id}`);
   };
+
   return (
-    <div className="flex flex-col w-[20rem] bg-red-100 p-3 mx-auto mb-6 max-w-[20rem] h-[30rem] rounded-md shadow-lg gap-2 justify-between">
-      <div>
-        <h1 className="text-lg  md:text-xl lg:text-2xl font-bold text-gray-900">
-          {title.length > 100 ? title.slice(0, 100) : title}
-        </h1>
-        <div className="w-full py-2">
-          <img
-            src={image ? image : profile}
-            alt="blog-image"
-            className="rounded-md object-cover w-[100%] h-[10rem]"
-          />
+    <div className="flex flex-col bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300 h-full">
+     
+      <Link to={`/${blogId}`} className="w-full h-48 overflow-hidden relative block group">
+        <img
+          src={image ? image : profile}
+          alt="blog-cover"
+          className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+        />
+        
+        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-indigo-600 shadow-sm uppercase tracking-wider">
+          {tag != undefined && tag.trim() !== "" ? tag : "General"}
         </div>
-        <p className="text-sm md:text-base lg:text-lg text-gray-600 leading-relaxed">
-          tag: {`${tag}`}
+      </Link>
+
+      {/* Card Content */}
+      <div className="flex flex-col flex-grow p-5 sm:p-6">
+        <Link to={`/${blogId}`}>
+          <h2 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 leading-tight hover:text-indigo-600 transition-colors">
+            {title}
+          </h2>
+        </Link>
+        
+        <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed flex-grow">
+          {description}
         </p>
-        <p>{description.slice(0, 100)}</p>
+
         <Link
           to={`/${blogId}`}
-          className="text-sm md:text-base text-blue-600 hover:underline font-medium"
+          className="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium text-sm transition-colors mt-auto w-max group"
         >
-          Read More <EastIcon></EastIcon>
+          Read More 
+          <EastIcon className="ml-1 w-4 h-4 transform group-hover:translate-x-1 transition-transform" fontSize="small" />
         </Link>
       </div>
-      <div
-        className="flex flex-row gap-1 cursor-pointer mb-3"
+
+      {/* Author Section */}
+      <div 
+        className="flex items-center px-5 sm:px-6 py-4 bg-gray-50 border-t border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors"
         onClick={handleClick}
       >
         <img
           src={author.profileImage ? author.profileImage : profile}
-          alt="logo"
-          className="w-10 h-10 rounded-full "
+          alt={author.username}
+          className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
         />
-        <div className="flex flex-col justify-between">
-          <p className="text-xs md:text-sm text-gray-500 font-medium">
-            {author.username}
-          </p>
-          <p className="text-xs md:text-sm text-gray-400">{author.email}</p>
+        <div className="ml-3">
+          <p className="text-sm font-semibold text-gray-900">{author.username}</p>
+          <p className="text-xs text-gray-500 truncate max-w-[180px]">{author.email}</p>
         </div>
       </div>
     </div>
