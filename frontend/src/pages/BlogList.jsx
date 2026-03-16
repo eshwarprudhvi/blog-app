@@ -3,6 +3,7 @@ import Card from "../components/Card";
 import Button from "@mui/material/Button";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import NoBlogs from "../components/NoBlogs";
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,11 +37,14 @@ const BlogList = () => {
   }
   return (
     <>
-      <div className="w-[full] h-[15rem] bg-blue-100 flex flex-col justify-center mb-4">
+      <div
+        className="w-[full] h-[15rem]  flex flex-col justify-center mb-4"
+        style={{ backgroundColor: "rgb(255, 255, 255)" }}
+      >
         <div className="mx-auto flex ">
           <input
             type="text"
-            className="outline w-[100] md:w-[60vw] rounded-sm h-[3rem] bg-gray-200 px-2"
+            className="outline w-[100] md:w-[60vw] rounded-sm h-[3rem] border-1 bg-white px-2"
             value={search}
             placeholder="Search here"
             onChange={(e) => {
@@ -50,7 +54,7 @@ const BlogList = () => {
           />
 
           <select
-            className="w-full w-[30%] max-w-[10rem]"
+            className="w-full max-w-[10rem] sm:max-w-[12rem] text-sm sm:text-base px-2 py-1 rounded-md ml-2 border border-gray-300 font-medium"
             name="tag"
             onChange={(e) => {
               setTag(e.target.value);
@@ -64,16 +68,18 @@ const BlogList = () => {
           </select>
         </div>
       </div>
+      {blogs.length === 0 && <NoBlogs />}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {blogs.length === 0 && <p>No blogs found</p>}
         {blogs.map((blog) => {
           return (
             <Card
               key={blog._id}
+              blogId={blog._id}
               title={blog.title}
               description={blog.description}
-              tag={blog.tag}
+              tag={blog.tags}
               author={blog.author}
+              image={blog.image}
             />
           );
         })}
