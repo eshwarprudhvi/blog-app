@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import NoBlogs from "../components/NoBlogs";
+import tags from "../config/tags";
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,9 +18,14 @@ const BlogList = () => {
       fetch(
         `https://blog-app-0j5v.onrender.com/api/blogs?search=${search}&page=${page}&tag=${tag}`
       )
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`Server error: ${res.status}`);
+          }
+          return res.json();
+        })
         .then((data) => {
-          setBlogs(data.blogs);
+          setBlogs(data.blogs || []);
           setLoading(false);
         })
         .catch((e) => setError(e.message))
@@ -75,10 +81,11 @@ const BlogList = () => {
               }}
             >
               <option value="">All Categories</option>
-              <option value="web">Web</option>
-              <option value="mern">MERN</option>
-              <option value="backend">Backend</option>
-              <option value="frontend">Frontend</option>
+              {tags.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
             </select>
           </div>
         </div>
